@@ -1,14 +1,26 @@
 <?php
 
-/*
- * Plugin Name:       All in one Plugin
- * Description:       Random Plugin
- * Version:           1.0
+/**
+ * Plugin Name
+ *
+ * @package           EverBlock
+ * @author            Jayclyde Taguines
+ * @copyright         2024 Jayclyde Taguines
+ * @license           GPL-2.0-or-later
+ *
+ * @wordpress-plugin
+ * Plugin Name:       EverBlock
+ * Plugin URI:        https://example.com/plugin-name
+ * Description:       Description of the plugin.
+ * Version:           1.0.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
- * Author:            Jayclyde Taguines     
- * Text Domain:       all-in-one-plugin
- * Domain Path:       /languages
+ * Author:            Jayclyde Taguines
+ * Author URI:        https://example.com
+ * Text Domain:       plugin-slug
+ * License:           GPL v2 or later
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Update URI:        https://example.com/my-plugin/
  */
 
 
@@ -21,8 +33,8 @@ add_action( 'init', 'dynamic_post_types_plugin_register_post_type' );
 // Add main menu and submenus
 function dynamic_post_types_plugin_menu() {
     add_menu_page(
-        'All in One Plugin',
-        'All in One Plugin',
+        'EverBlock',
+        'EverBlock',
         'manage_options',
         'dynamic-all-in-one-plugin',
         'dynamic_all_in_one_plugin_settings_page',
