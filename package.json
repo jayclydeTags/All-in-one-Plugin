@@ -21,6 +21,7 @@
   "author": "Jayclyde Taguines",
   "license": "GPL-2.0-or-later",
   "devDependencies": {
+    "@wordpress/babel-preset-default": "^7.39.0",
     "@wordpress/scripts": "^27.6.0"
   },
   "dependencies": {

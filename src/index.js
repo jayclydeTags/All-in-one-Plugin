@@ -4,8 +4,17 @@
  */
 import{ render } from '@wordpress/element';
 
-const App = () => {
-    return 'EverBlock';
-}
 
-render(<App />, document.getElementById('everblock'));
+/**
+ * Internal dependencies
+ *
+ */
+import SettingsPage from './settings-page';
+
+
+/**
+ * Render the App
+ *
+ */
+
+render(<SettingsPage />, document.getElementById('everblock'));

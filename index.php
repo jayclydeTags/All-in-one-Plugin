@@ -23,7 +23,18 @@
  * Update URI:        https://example.com/my-plugin/
  */
 
+
 namespace EverBlock;
+
+
+/**
+ * Exit if accessed directly.
+ *
+ * This block of code is a safeguard to prevent direct access to the main plugin file.
+ *
+ * @since 1.0.0
+ */
+defined('ABSPATH') || exit;  // Exits script if it's not being called from within WordPress.
 
 /**
  * Register the EverBlock Settings page
@@ -49,7 +60,7 @@ function render_settings_page() {
     ?>
     
     <div id="everblock">
-        <?php esc_html_e( 'EverBlock Settings', 'everblock'); ?>
+        <?php esc_html_e( 'EverBlock Settings', 'everblock' ); ?>
     </div>
 
     <?php
@@ -67,13 +78,25 @@ add_action( 'admin_enqueue_scripts' , function( $suffix ) {
     $asset_file_page = plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
 
     if ( file_exists( $asset_file_page ) && 'toplevel_page_everblock' === $suffix ) {
+
         $asset_file = include $asset_file_page;
+
         wp_register_script(
             'everblock-block-editor',
-            plugins_url( 'build/index.js', __FILE__ ),
+            plugin_dir_url( __FILE__ ) . 'build/index.js',
             $asset_file['dependencies'],
-            $asset_file['version']
+            $asset_file['version'],
+            true
         );
+
         wp_enqueue_script( 'everblock-block-editor' );
     }
+
+    foreach ( $asset_file['dependencies'] as $style ) {
+        wp_enqueue_style( $style );
+    }
 });
+
+
+
+
