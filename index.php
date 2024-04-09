@@ -23,110 +23,57 @@
  * Update URI:        https://example.com/my-plugin/
  */
 
+namespace EverBlock;
 
-// Register custom post types
-function dynamic_post_types_plugin_register_post_type() {
-    // Define your custom post types here
-}
-add_action( 'init', 'dynamic_post_types_plugin_register_post_type' );
-
-// Add main menu and submenus
-function dynamic_post_types_plugin_menu() {
+/**
+ * Register the EverBlock Settings page
+ */
+function everblock_register_settings_page() {
     add_menu_page(
-        'EverBlock',
-        'EverBlock',
+        __('EverBlock Settings', 'everblock'),
+        __('EverBlock Settings', 'everblock'),
         'manage_options',
-        'dynamic-all-in-one-plugin',
-        'dynamic_all_in_one_plugin_settings_page',
-        'dashicons-admin-plugins',
-        12 // Position in the menu
+        'everblock',
+        __NAMESPACE__ . '\render_settings_page',
+        'dashicons-admin-generic',
+        6
     );
+} 
 
-    // Add submenus
-    add_submenu_page(
-        'dynamic-all-in-one-plugin',
-        'Post Type',
-        'Post Type',
-        'manage_options',
-        'dynamic-post-type',
-        'dynamic_post_types_plugin_settings_page'
-    );
+add_action( 'admin_menu', __NAMESPACE__ . '\everblock_register_settings_page' );
 
-    add_submenu_page(
-        'dynamic-all-in-one-plugin',
-        'Custom Field',
-        'Custom Field',
-        'manage_options',
-        'dynamic-custom-field',
-        'dynamic_custom_field_settings_page'
-    );
-
-    add_submenu_page(
-        'dynamic-all-in-one-plugin',
-        'Feature 3',
-        'Feature 3',
-        'manage_options',
-        'dynamic-feature-3',
-        'dynamic_feature_3_settings_page'
-    );
-
-    add_submenu_page(
-        'dynamic-all-in-one-plugin',
-        'Feature 4',
-        'Feature 4',
-        'manage_options',
-        'dynamic-feature-4',
-        'dynamic_feature_4_settings_page'
-    );
-}
-add_action( 'admin_menu', 'dynamic_post_types_plugin_menu' );
-
-// Display the settings page for managing custom post types
-function dynamic_post_types_plugin_settings_page() {
-    // Display settings page content here
-    echo '<div class="wrap">';
-    echo '<h2>Manage Custom Post Types</h2>';
-    // Add form and controls for managing custom post types
-    echo '<form method="post" action="">';
-    echo '<input type="text" name="post_type_name" placeholder="Post Type Name">';
-    echo '<input type="submit" name="add_post_type" value="Add Post Type">';
-    echo '</form>';
-    echo '<h3>Registered Custom Post Types</h3>';
+/**
+ * Render the EverBlock Settings page
+ */
+function render_settings_page() { 
+    ?>
     
-    // Retrieve list of registered custom post types
-    $post_types = get_post_types( array( 'public' => true ), 'objects' );
+    <div id="everblock">
+        <?php esc_html_e( 'EverBlock Settings', 'everblock'); ?>
+    </div>
 
-    // Display the list in a table
-    echo '<table class="wp-list-table widefat fixed">';
-    echo '<thead>';
-    echo '<tr>';
-    echo '<th>Name</th>';
-    echo '<th>Labels</th>';
-    echo '<th>Actions</th>';
-    echo '</tr>';
-    echo '</thead>';
-    echo '<tbody>';
-    foreach ( $post_types as $post_type ) {
-        echo '<tr>';
-        echo '<td>' . $post_type->name . '</td>';
-        echo '<td>' . $post_type->label . '</td>';
-        echo '<td><a href="#">Edit</a> | <a href="#">Delete</a></td>'; // Add edit and delete links
-        echo '</tr>';
-    }
-    echo '</tbody>';
-    echo '</table>';
-
-    echo '</div>';
-
-    // Handle form submission
-    if ( isset( $_POST['add_post_type'] ) ) {
-        $post_type_name = sanitize_text_field( $_POST['post_type_name'] );
-        // Validate $post_type_name and register the custom post type
-        $args = array(
-            'public' => true,
-            'label'  => $post_type_name,
-            // Add more arguments as needed
-        );
-        register_post_type( $post_type_name, $args );
-    }
+    <?php
 }
+
+/**
+ * Register the EverBlock Settings page
+ * @link https://developer.wordpress.org/reference/functions/add_action
+ * 
+ * @param string $suffix
+ */
+add_action( 'admin_enqueue_scripts' , function( $suffix ) {
+    // toplevel_page_everblock
+
+    $asset_file_page = plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
+
+    if ( file_exists( $asset_file_page ) && 'toplevel_page_everblock' === $suffix ) {
+        $asset_file = include $asset_file_page;
+        wp_register_script(
+            'everblock-block-editor',
+            plugins_url( 'build/index.js', __FILE__ ),
+            $asset_file['dependencies'],
+            $asset_file['version']
+        );
+        wp_enqueue_script( 'everblock-block-editor' );
+    }
+});
